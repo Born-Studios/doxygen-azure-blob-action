@@ -41,6 +41,10 @@ runs:
       run: doxygen ${{ inputs.config_file }}
       shell: bash
       
+    - name: Create inputs.folder
+      run: mkdir -p ${{ inputs.folder }}
+      shell: bash
+      
     - name: Create .nojekyll (ensures pages with underscores work on gh pages)
       run: touch ${{ inputs.folder }}/.nojekyll
       shell: bash
