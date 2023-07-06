@@ -30,7 +30,7 @@ runs:
       shell: bash
 
     - name: Generate Doxygen Documentation
-      run: PROJECT_NAME=${{ inputs.project_name }} doxygen
+      run: PROJECT_NAME="${{ inputs.project_name }}" doxygen
       shell: bash
 
     - uses: LanceMcCarthy/Action-AzureBlobUpload@v2
