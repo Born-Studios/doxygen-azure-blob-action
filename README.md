@@ -1,4 +1,4 @@
-# Doxygen GitHub Pages Deploy Action
+# Doxygen Azure Blob Storage Deploy Action
 
 GitHub Action for making and deploying Doxygen documentation to Azure Blob Storage
 
