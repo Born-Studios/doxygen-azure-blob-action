@@ -1,58 +1,44 @@
-name: 'Doxygen GitHub Pages Deploy Action'
-author: 'Jonah Lawrence'
-description: 'Make docs with Doxygen then deploy the generated HTML to GitHub pages'
+name: 'Doxygen Azure Blob Storage Deploy Action'
+author: 'Darren Perry'
+description: 'Make docs with Doxygen then deploy the generated HTML to Azure Blob Storage'
 branding:
   icon: "upload-cloud"
   color: "purple"
 
 inputs:
-  github_token:
-    description: 'A GitHub token for pushing to the repo. Example: https://git.io/passing-token'
+  azure_blob_connection_string:
+    description: 'Azure Access Keys Connection string. https://learn.microsoft.com/en-gb/azure/storage/common/storage-account-keys-manage?tabs=azure-portal#regenerate-access-keys'
     required: true
-  branch:
-    description: 'Branch name for pushing GitHub pages files'
+  project_name:
+    description: 'The title of the project documentation.'
     required: true
-    default: "gh-pages"
-  folder:
-    description: 'Folder where Doxygen will generate the HTML build files'
-    required: true
-    default: "docs/html"
-  config_file:
-    description: 'Path of the Doxygen configuration file'
-    required: true
-    default: "Doxyfile"
-  target_folder:
-    description: 'Directory on the deployment branch for pushing the build files'
-    required: false
 
 runs:
   using: "composite"
   steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+    - uses: actions/checkout@v3
+      name: Checkout repository
       with:
         submodules: "true"
+
+    - name: Get Doxyfile
+      run: wget https://borndevdocumentation.z33.web.core.windows.net/Doxyfile
+      shell: bash
 
     - name: Install Doxygen
       run: sudo apt-get install doxygen graphviz -y
       shell: bash
 
     - name: Generate Doxygen Documentation
-      run: doxygen ${{ inputs.config_file }}
-      shell: bash
-      
-    - name: Create inputs.folder
-      run: mkdir -p ${{ inputs.folder }}
-      shell: bash
-      
-    - name: Create .nojekyll (ensures pages with underscores work on gh pages)
-      run: touch ${{ inputs.folder }}/.nojekyll
+      run: PROJECT_NAME=${{ inputs.project_name }} doxygen
       shell: bash
 
-    - name: Deploy to GitHub Pages
-      uses: JamesIves/github-pages-deploy-action@v4
+    - uses: LanceMcCarthy/Action-AzureBlobUpload@v2
+      name: Uploading to Azure storage...
       with:
-        token: ${{ inputs.github_token }}
-        branch: ${{ inputs.branch }}
-        folder: ${{ inputs.folder }}
-        target-folder: ${{ inputs.target_folder }}
+        connection_string: ${{ inputs.azure_blob_connection_string }}
+        container_name: "$web"
+        source_folder: "Docs"
+        destination_folder: ${{ github.event.repository.name }}
+        clean_destination_folder: true
+        delete_if_exists: true
