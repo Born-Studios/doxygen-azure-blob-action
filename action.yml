@@ -29,6 +29,14 @@ runs:
       run: sudo apt-get install doxygen graphviz -y
       shell: bash
 
+    - name: Install Doxygen Awesome
+      run: |
+        git clone https://github.com/jothepro/doxygen-awesome-css.git
+        cd doxygen-awesome-css
+        git checkout v2.2.1
+        cd ../
+      shell: bash
+
     - name: Generate Doxygen Documentation
       run: PROJECT_NAME="${{ inputs.project_name }}" doxygen
       shell: bash
