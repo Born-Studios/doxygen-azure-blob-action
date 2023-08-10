@@ -21,11 +21,9 @@ jobs:
       - uses: Born-Studios/doxygen-azure-blob-action@v1.3.2
         name: Uploading to Azure blob storage...
         with:
-          azure_blob_connection_string: ${{ secrets.YourAzureBlobConnectionString }}
-          project_name: "My Project"
+          azure_blob_connection_string: ${{ secrets.NPM_AUTH_TOKEN }}
 ```
 
 ## Options
 
 - `azure_blob_connection_string` (required): Azure Access Keys Connection string.  [docs](https://learn.microsoft.com/en-gb/azure/storage/common/storage-account-keys-manage?tabs=azure-portal#regenerate-access-keys).
-- `project_name` (required): The title of the project documentation.
