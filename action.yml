@@ -48,5 +48,5 @@ runs:
         container_name: "$web"
         source_folder: "Docs"
         destination_folder: ${{ github.event.repository.name }}
-        clean_destination_folder: true
+        clean_destination_folder: false
         delete_if_exists: true
